@@ -1,0 +1,8 @@
+schema_version: "1.0"
+kind: thresholds
+success_rate_drop_abs: 0.2
+reward_drop_abs: 1.0
+flaky_success_rate_std: 0.25
+replay_recovery_fraction: 0.5
+high_confidence: 0.8
+medium_confidence: 0.5

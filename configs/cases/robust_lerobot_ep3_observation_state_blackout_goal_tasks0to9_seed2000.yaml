@@ -1,0 +1,81 @@
+schema_version: '1.0'
+kind: case
+case:
+  case_id: robust_lerobot_ep3_observation_state_blackout_goal_tasks0to9_seed2000
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: rollout_behavior_anomaly
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: observation_sensor_preprocessing
+  rq1_factor_category: observation_sensor_preprocessing
+  rq1_evidence_refs:
+  - github_issue::huggingface/lerobot::1007
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: full
+  injected_factor: observation_sensor_preprocessing
+  injection_operator: observation.state_blackout
+baseline_runs:
+- platform: lerobot_libero
+  run_id: robust_lr_goal_tasks0to9_ep3_baseline_seed2000
+  role: baseline
+  suite: libero_goal
+  task_ids: &id001
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  seed: 2000
+  episodes: 3
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+current_runs:
+- platform: lerobot_libero
+  run_id: robust_lr_goal_tasks0to9_ep3_current_observation_state_blackout_seed2000
+  role: current
+  suite: libero_goal
+  task_ids: *id001
+  seed: 2000
+  episodes: 3
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+  libero_state_keys:
+  - observation.state
+  libero_state_blackout_value: 0.0
+  injection:
+    enabled: true
+    factor: observation_sensor_preprocessing
+    operator: observation.state_blackout
+    params:
+      keys:
+      - observation.state
+      value: 0.0
+replay_runs:
+- platform: lerobot_libero
+  run_id: robust_lr_goal_tasks0to9_ep3_replay_seed2000
+  role: replay
+  suite: libero_goal
+  task_ids: *id001
+  seed: 2000
+  episodes: 3
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

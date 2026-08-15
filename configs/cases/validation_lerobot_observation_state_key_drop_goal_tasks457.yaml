@@ -1,0 +1,43 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_lerobot_observation_state_key_drop_goal_tasks457
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: evaluation_crash_or_failure
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: observation_sensor_preprocessing
+  injected_factor: observation_sensor_preprocessing
+  injection_operator: observation.state_key_drop
+  rq1_factor_category: observation_sensor_preprocessing
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::1007
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_run_ids:
+  - validation_lr_goal_tasks457_ep1_baseline_seed1000
+current_runs:
+  - platform: lerobot_libero
+    run_id: validation_lr_goal_tasks457_ep1_current_state_key_drop_seed1000
+    role: current
+    suite: libero_goal
+    task_ids: [4, 5, 7]
+    seed: 1000
+    episodes: 1
+    output_root: /data/project/zjx/runs/evaltriage
+    policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+    obs_type: pixels_agent_pos
+    camera_size: 360
+    compile_model: false
+    use_async_envs: false
+    libero_state_keys: [observation.state]
+    injection:
+      enabled: true
+      factor: observation_sensor_preprocessing
+      operator: observation.state_key_drop
+      params:
+        keys: [observation.state]
+replay_run_ids:
+  - validation_lr_goal_tasks457_ep1_replay_seed1000
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

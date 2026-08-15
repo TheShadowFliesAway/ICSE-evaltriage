@@ -1,0 +1,57 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_maniskill_action_scale_pickcube
+  platform: maniskill
+  case_family: setup_sensitive_factor
+  deviation_symptom: rollout_behavior_anomaly
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: action_controller_interface
+  injected_factor: action_controller_interface
+  injection_operator: action.scale_multiplier
+  rq1_factor_category: action_controller_interface
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::3401
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_runs:
+  - platform: maniskill
+    run_id: validation_ms_action_scale_pickcube_baseline_seed1000_ep20
+    role: baseline
+    suite: PickCube-v1
+    task_ids: [0]
+    seed: 1000
+    episodes: 20
+    output_root: /data/project/zjx/runs/evaltriage
+    control_policy: random
+    obs_mode: state
+current_runs:
+  - platform: maniskill
+    run_id: validation_ms_action_scale_pickcube_current_seed1000_ep20
+    role: current
+    suite: PickCube-v1
+    task_ids: [0]
+    seed: 1000
+    episodes: 20
+    output_root: /data/project/zjx/runs/evaltriage
+    control_policy: random
+    obs_mode: state
+    injection:
+      enabled: true
+      factor: action_controller_interface
+      operator: action.scale_multiplier
+      params:
+        multiplier: 0.0
+replay_runs:
+  - platform: maniskill
+    run_id: validation_ms_action_scale_pickcube_replay_seed1000_ep20
+    role: replay
+    suite: PickCube-v1
+    task_ids: [0]
+    seed: 1000
+    episodes: 20
+    output_root: /data/project/zjx/runs/evaltriage
+    control_policy: random
+    obs_mode: state
+thresholds_path: configs/thresholds/validation_maniskill_random.yaml

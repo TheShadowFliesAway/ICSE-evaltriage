@@ -1,0 +1,27 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: smoke_maniskill_reset_seed
+  platform: maniskill
+  case_family: setup_sensitive_factor
+  deviation_symptom: evaluation_instability_or_flakiness
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: reset_or_initial_state
+  injected_factor: reset_or_initial_state
+  injection_operator: reset.disable_fixed_init_state
+  rq1_factor_category: reset_or_initial_state
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::3814
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: smoke
+baseline_runs: []
+baseline_run_ids:
+  - smoke_ms_reset_replay_20260628_023533
+current_runs: []
+current_run_ids:
+  - smoke_ms_reset_current_20260628_023513
+replay_runs: []
+replay_run_ids:
+  - smoke_ms_reset_replay_20260628_023533
+thresholds_path: configs/thresholds/default.yaml

@@ -1,0 +1,64 @@
+schema_version: '1.0'
+kind: case
+case:
+  case_id: robust_failure_dataset_remove_action_libero10_seed1000
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: evaluation_crash_or_failure
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: data_dataset_format
+  rq1_factor_category: data_dataset_format
+  rq1_evidence_refs:
+  - github_issue::openvla/openvla::93
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: full
+  injected_factor: data_dataset_format
+  injection_operator: dataset.remove_feature_column
+baseline_runs:
+- platform: lerobot_libero
+  run_id: robust_dataset_libero10_preflight_baseline_action_seed1000
+  role: baseline
+  suite: libero_10_image
+  task_ids:
+  - 0
+  seed: 1000
+  episodes: 1
+  output_root: /data/project/zjx/runs/evaltriage
+  dataset_path: /data/project/zjx/datasets/lerobot/libero_10_image
+  dataset_feature_key: action
+  obs_type: dataset_preflight
+current_runs:
+- platform: lerobot_libero
+  run_id: robust_dataset_libero10_preflight_current_remove_action_seed1000
+  role: current
+  suite: libero_10_image
+  task_ids:
+  - 0
+  seed: 1000
+  episodes: 1
+  output_root: /data/project/zjx/runs/evaltriage
+  dataset_path: /data/project/zjx/datasets/lerobot/libero_10_image
+  dataset_feature_key: action
+  obs_type: dataset_preflight
+  allow_failure: true
+  injection:
+    enabled: true
+    factor: data_dataset_format
+    operator: dataset.remove_feature_column
+    params:
+      feature_key: action
+replay_runs:
+- platform: lerobot_libero
+  run_id: robust_dataset_libero10_preflight_replay_action_seed1000
+  role: replay
+  suite: libero_10_image
+  task_ids:
+  - 0
+  seed: 1000
+  episodes: 1
+  output_root: /data/project/zjx/runs/evaltriage
+  dataset_path: /data/project/zjx/datasets/lerobot/libero_10_image
+  dataset_feature_key: action
+  obs_type: dataset_preflight
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

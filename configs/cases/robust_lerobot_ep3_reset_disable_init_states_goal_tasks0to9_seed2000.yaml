@@ -1,0 +1,77 @@
+schema_version: '1.0'
+kind: case
+case:
+  case_id: robust_lerobot_ep3_reset_disable_init_states_goal_tasks0to9_seed2000
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: evaluation_instability_or_flakiness
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: reset_or_initial_state
+  rq1_factor_category: reset_or_initial_state
+  rq1_evidence_refs:
+  - github_issue::huggingface/lerobot::3814
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: full
+  injected_factor: reset_or_initial_state
+  injection_operator: reset.disable_fixed_init_state
+baseline_runs:
+- platform: lerobot_libero
+  run_id: robust_lr_goal_tasks0to9_ep3_baseline_seed2000
+  role: baseline
+  suite: libero_goal
+  task_ids: &id001
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 7
+  - 8
+  - 9
+  seed: 2000
+  episodes: 3
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+current_runs:
+- platform: lerobot_libero
+  run_id: robust_lr_goal_tasks0to9_ep3_current_reset_disable_init_states_seed2000
+  role: current
+  suite: libero_goal
+  task_ids: *id001
+  seed: 2000
+  episodes: 3
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+  libero_init_states: false
+  injection:
+    enabled: true
+    factor: reset_or_initial_state
+    operator: reset.disable_fixed_init_state
+    params:
+      init_states: false
+replay_runs:
+- platform: lerobot_libero
+  run_id: robust_lr_goal_tasks0to9_ep3_replay_seed2000
+  role: replay
+  suite: libero_goal
+  task_ids: *id001
+  seed: 2000
+  episodes: 3
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

@@ -1,0 +1,45 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_lerobot_action_control_mode_goal_task1
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: rollout_behavior_anomaly
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: action_controller_interface
+  injected_factor: action_controller_interface
+  injection_operator: action.change_control_mode
+  rq1_factor_category: action_controller_interface
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::3401
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_runs: []
+baseline_run_ids:
+  - validation_lr_goal_task1_ep1_baseline_seed1000
+current_runs:
+  - platform: lerobot_libero
+    run_id: validation_lr_goal_task1_ep1_current_control_mode_absolute_seed1000
+    role: current
+    suite: libero_goal
+    task_ids: [1]
+    seed: 1000
+    episodes: 1
+    output_root: /data/project/zjx/runs/evaltriage
+    policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+    obs_type: pixels_agent_pos
+    camera_size: 360
+    libero_control_mode: absolute
+    compile_model: false
+    use_async_envs: false
+    injection:
+      enabled: true
+      factor: action_controller_interface
+      operator: action.change_control_mode
+      params:
+        control_mode: absolute
+replay_runs: []
+replay_run_ids:
+  - validation_lr_goal_task1_ep1_replay_seed1000
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

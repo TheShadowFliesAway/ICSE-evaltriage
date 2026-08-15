@@ -1,0 +1,7 @@
+[console_scripts]
+evaltriage-ablate = evaltriage.cli:ablate_main
+evaltriage-aggregate = evaltriage.cli:aggregate_main
+evaltriage-artifact = evaltriage.cli:artifact_main
+evaltriage-case = evaltriage.cli:case_main
+evaltriage-rq2-status = evaltriage.cli:rq2_status_main
+evaltriage-run = evaltriage.cli:run_main

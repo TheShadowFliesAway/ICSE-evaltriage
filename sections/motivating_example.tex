@@ -1,0 +1,17 @@
+\section{Motivating Example}
+\label{sec:motivating-example}
+
+Real project reports show why a changed embodied-AI benchmark score is not self-explanatory. In one LeRobot/LIBERO report, evaluating an X-VLA checkpoint on LIBERO-10 produced 0\% success until the evaluation was run with the absolute control mode expected by the checkpoint \cite{lerobot3401}. In another report, a converted pi0.5 LIBERO checkpoint evaluated at zero success despite a much higher reported reference number; the discussion pointed to image processing and normalization differences between pipelines \cite{lerobot2533}. Other reports involve the harness or runtime rather than a completed rollout: an evaluation bug unintentionally capped the number of unique LIBERO initial states sampled by \mbox{\emph{-{}-eval.batch\_size}} \cite{lerobot2850}, and a reset/lifecycle bug crashed evaluation after an environment was closed and later reused \cite{lerobot3814}. These examples have different observable symptoms, but they share the same diagnosis problem: the aggregate result does not identify which evaluation factor changed, whether the factor explains behavior, or whether the evidence is too weak to attribute.
+
+Figure~\ref{fig:motivating-example} shows a controlled version of the action-interface pattern. We use a controlled case rather than a GitHub issue because diagnosis requires comparable baseline, current, and replay artifacts. The baseline evaluates the same policy on LIBERO-Goal tasks 0--9 with the expected relative action-control interface and obtains a success rate of 0.80. The current run changes the action control mode from relative to absolute and drops to 0.10. This drop alone is not enough to diagnose the cause: a rerun-$k$ or statistical gate can observe that results differ, but it cannot decide whether the change is a policy regression, a flaky run, or an evaluation-interface mismatch.
+
+\begin{figure}[!b]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig1.pdf}
+  \caption{Motivating diagnosis case: baseline and current runs first expose an action-control deviation, then a factor-directed replay restores the control setting and recovers the baseline success rate.}
+  \label{fig:motivating-example}
+\end{figure}
+
+The replay run restores the baseline action-control setting while holding the policy, task suite, and seed fixed. Its success rate returns to 0.80, giving replay-supported evidence that the deviation is setup-sensitive and attributable to the action/controller interface. A manifest-only method could identify the changed control field but would not know whether it caused the observed behavior; a metric-only method could detect the drop but would not know what to test next. \sys connects the two by treating the manifest difference as a hypothesis and replay recovery as supporting evidence.
+
+The same structure extends beyond this particular metric drop. For an observation-preprocessing mismatch, the replay would restore the expected image or state processing path. For a reset or harness failure, the current run may have no comparable success rate at all, so the diagnosis must use a failure record and a recovery replay. The example therefore illustrates three requirements that recur throughout the paper: preserve evaluation context, connect candidate factors to behavioral or failure-recovery evidence, and abstain when the artifacts do not support a defensible attribution.

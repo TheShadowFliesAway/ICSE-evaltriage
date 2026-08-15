@@ -1,0 +1,91 @@
+\documentclass[10pt,conference]{IEEEtran}
+
+% ICSE 2027 Research Track requires IEEE conference proceedings format:
+% \documentclass[10pt,conference]{IEEEtran}
+% Do not use compsoc or compsocconf options.
+% Review mode: double-anonymous; author block intentionally left blank.
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+
+\newif\ifshowrefs
+\showrefstrue  % real \cite{} commands and refs.bib entries are present
+
+% Source-compatible no-op helpers.
+\newcommand{\todo}[1]{}
+\newcommand{\ph}[1]{#1}
+\newcommand{\figbox}[2]{}
+
+% Short system-name macro so we can rename the tool in one place.
+\newcommand{\sys}{\textsc{EvalTriage}\xspace}
+
+% Abbreviation / enumerator macros (centralize house style).
+\newcommand{\eg}{e.g.,\xspace}
+\newcommand{\ie}{i.e.,\xspace}
+\newcommand{\first}{(1)\xspace}
+\newcommand{\second}{(2)\xspace}
+\newcommand{\third}{(3)\xspace}
+\newcommand{\fourth}{(4)\xspace}
+\newcommand{\fifth}{(5)\xspace}
+\newcommand{\RQ}[1]{\textbf{RQ#1}\xspace}
+
+% Listing style for inline code snippets.
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  numbers=none,
+  frame=single,
+  framesep=3pt,
+  xleftmargin=2pt,
+  aboveskip=4pt,
+  belowskip=4pt,
+}
+
+\begin{document}
+
+\title{EvalTriage: Diagnosing Evaluation Deviations in Embodied AI Pipelines
+}
+
+% Double-anonymous submission: omit author names and affiliations.
+\author{}
+
+\maketitle
+
+\input{sections/abstract}
+
+\begin{IEEEkeywords}
+software engineering for AI, embodied AI, robot learning, evaluation pipelines,
+regression testing, reproducibility, differential replay, diagnosis
+\end{IEEEkeywords}
+
+\input{sections/intro}
+\input{sections/motivating_example}
+\input{sections/background_problem}
+\input{sections/empirical_study}
+\input{sections/approach}
+\input{sections/evaluation}
+\input{sections/discussion_threats}
+\input{sections/related_work}
+\input{sections/conclusion}
+\input{sections/data_availability}
+
+\ifshowrefs
+  \clearpage
+  \bibliographystyle{IEEEtran}
+  \bibliography{refs}
+\fi
+
+\end{document}

@@ -1,0 +1,24 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: calibration_lerobot_eval_protocol_episode_length_goal_tasks01_len100
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: success_rate_drop_or_mismatch
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: evaluation_protocol_metric
+  injected_factor: evaluation_protocol_metric
+  injection_operator: eval_protocol.change_episode_length
+  rq1_factor_category: evaluation_protocol_metric
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::1316
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_run_ids:
+  - calibration_lr_goal_tasks01_ep1_baseline_seed1000
+current_run_ids:
+  - calibration_lr_goal_tasks01_ep1_current_episode_length_100_seed1000
+replay_run_ids:
+  - calibration_lr_goal_tasks01_ep1_replay_seed1000
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

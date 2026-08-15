@@ -1,0 +1,24 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_lerobot_harness_eval_batch_size_goal_tasks457_ep2_paired
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: rollout_behavior_anomaly
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: evaluation_script_harness
+  injected_factor: evaluation_script_harness
+  injection_operator: evaluation_script.modify_harness_flag
+  rq1_factor_category: evaluation_script_harness
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::2850
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_run_ids:
+  - validation_lr_goal_tasks457_ep2_baseline_batch1_seed1000
+current_run_ids:
+  - validation_lr_goal_tasks457_ep2_current_eval_batch2_seed1000
+replay_run_ids:
+  - validation_lr_goal_tasks457_ep2_replay_batch1_seed1000
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

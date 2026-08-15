@@ -1,0 +1,27 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: smoke_maniskill_action_scale
+  platform: maniskill
+  case_family: setup_sensitive_factor
+  deviation_symptom: rollout_behavior_anomaly
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: action_controller_interface
+  injected_factor: action_controller_interface
+  injection_operator: action.scale_multiplier
+  rq1_factor_category: action_controller_interface
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::3401
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: smoke
+baseline_runs: []
+baseline_run_ids:
+  - smoke_ms_action_scale_replay_20260628_023017
+current_runs: []
+current_run_ids:
+  - smoke_ms_action_scale_current_20260628_022935
+replay_runs: []
+replay_run_ids:
+  - smoke_ms_action_scale_replay_20260628_023017
+thresholds_path: configs/thresholds/default.yaml

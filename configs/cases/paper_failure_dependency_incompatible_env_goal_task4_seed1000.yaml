@@ -1,0 +1,71 @@
+schema_version: '1.0'
+kind: case
+case:
+  case_id: paper_failure_dependency_incompatible_env_goal_task4_seed1000
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: evaluation_crash_or_failure
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: dependency_runtime_environment
+  rq1_factor_category: dependency_runtime_environment
+  rq1_evidence_refs:
+  - github_issue::huggingface/lerobot::2134
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: full
+  injected_factor: dependency_runtime_environment
+  injection_operator: runtime.switch_incompatible_env
+baseline_runs:
+- platform: lerobot_libero
+  run_id: paper_lr_goal_task4_ep1_failure_baseline_seed1000
+  role: baseline
+  suite: libero_goal
+  task_ids:
+  - 4
+  seed: 1000
+  episodes: 1
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+current_runs:
+- platform: lerobot_libero
+  run_id: paper_lr_goal_task4_ep1_current_incompatible_base_env_seed1000
+  role: current
+  suite: libero_goal
+  task_ids:
+  - 4
+  seed: 1000
+  episodes: 1
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+  libero_env: base
+  allow_failure: true
+  injection:
+    enabled: true
+    factor: dependency_runtime_environment
+    operator: runtime.switch_incompatible_env
+    params:
+      conda_env: base
+replay_runs:
+- platform: lerobot_libero
+  run_id: paper_lr_goal_task4_ep1_failure_replay_seed1000
+  role: replay
+  suite: libero_goal
+  task_ids:
+  - 4
+  seed: 1000
+  episodes: 1
+  output_root: /data/project/zjx/runs/evaltriage
+  policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+  obs_type: pixels_agent_pos
+  camera_size: 360
+  compile_model: false
+  use_async_envs: false
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

@@ -1,0 +1,57 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_maniskill_reset_seed_pickcube
+  platform: maniskill
+  case_family: setup_sensitive_factor
+  deviation_symptom: evaluation_instability_or_flakiness
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: reset_or_initial_state
+  injected_factor: reset_or_initial_state
+  injection_operator: reset.disable_fixed_init_state
+  rq1_factor_category: reset_or_initial_state
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::3814
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_runs:
+  - platform: maniskill
+    run_id: validation_ms_reset_seed_pickcube_baseline_seed1000_ep20
+    role: baseline
+    suite: PickCube-v1
+    task_ids: [0]
+    seed: 1000
+    episodes: 20
+    output_root: /data/project/zjx/runs/evaltriage
+    control_policy: random
+    obs_mode: state
+current_runs:
+  - platform: maniskill
+    run_id: validation_ms_reset_seed_pickcube_current_seed1000_offset10000_ep20
+    role: current
+    suite: PickCube-v1
+    task_ids: [0]
+    seed: 1000
+    episodes: 20
+    output_root: /data/project/zjx/runs/evaltriage
+    control_policy: random
+    obs_mode: state
+    injection:
+      enabled: true
+      factor: reset_or_initial_state
+      operator: reset.disable_fixed_init_state
+      params:
+        seed_offset: 10000
+replay_runs:
+  - platform: maniskill
+    run_id: validation_ms_reset_seed_pickcube_replay_seed1000_ep20
+    role: replay
+    suite: PickCube-v1
+    task_ids: [0]
+    seed: 1000
+    episodes: 20
+    output_root: /data/project/zjx/runs/evaltriage
+    control_policy: random
+    obs_mode: state
+thresholds_path: configs/thresholds/validation_maniskill_random.yaml

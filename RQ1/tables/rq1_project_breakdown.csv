@@ -1,0 +1,16 @@
+project,repo,total_evidence,issue_count,pr_count,open_count,closed_count,deviation_and_factor_count,deviation_only_count,factor_only_count,unknown_primary_factor_count,unknown_primary_factor_percent,top_primary_deviation_symptom,top_primary_factor_category,top_primary_affected_phase
+LeRobot,huggingface/lerobot,105,105,0,53,52,59,38,8,39,37.14,success_rate_drop_or_mismatch,unknown_or_not_specified,rollout_execution
+MetaWorld,Farama-Foundation/Metaworld,65,40,25,2,63,32,11,22,14,21.54,unknown_or_not_applicable,unknown_or_not_specified,benchmark_or_eval_setup
+ManiSkill,mani-skill/ManiSkill,52,52,0,9,43,34,10,8,11,21.15,success_rate_drop_or_mismatch,unknown_or_not_specified,rollout_execution
+Habitat-Lab,facebookresearch/habitat-lab,47,43,4,19,28,26,14,7,16,34.04,evaluation_crash_or_failure,unknown_or_not_specified,benchmark_or_eval_setup
+OpenVLA,openvla/openvla,33,32,1,14,19,16,15,2,15,45.45,success_rate_drop_or_mismatch,unknown_or_not_specified,rollout_execution
+robosuite,ARISE-Initiative/robosuite,27,25,2,6,21,12,9,6,10,37.04,rollout_behavior_anomaly,unknown_or_not_specified,rollout_execution
+SimplerEnv,simpler-env/SimplerEnv,26,25,1,9,17,17,7,2,7,26.92,evaluation_crash_or_failure,dependency_runtime_environment,benchmark_or_eval_setup
+Isaac Lab,isaac-sim/IsaacLab,23,23,0,6,17,13,5,5,5,21.74,rollout_behavior_anomaly,simulator_physics_rendering,rollout_execution
+OpenVLA-OFT,moojink/openvla-oft,22,21,1,16,6,10,11,1,12,54.55,success_rate_drop_or_mismatch,unknown_or_not_specified,benchmark_or_eval_setup
+LIBERO,Lifelong-Robot-Learning/LIBERO,16,13,3,10,6,9,7,0,7,43.75,evaluation_crash_or_failure,unknown_or_not_specified,rollout_execution
+Habitat-Sim,facebookresearch/habitat-sim,14,8,6,0,14,7,4,3,4,28.57,rollout_behavior_anomaly,unknown_or_not_specified,rollout_execution
+vla-evaluation-harness,allenai/vla-evaluation-harness,14,3,11,0,14,12,2,0,2,14.29,success_rate_drop_or_mismatch,action_controller_interface,rollout_execution
+RLBench,stepjam/RLBench,13,12,1,8,5,3,7,3,7,53.85,rollout_behavior_anomaly,unknown_or_not_specified,environment_reset
+CALVIN,mees/calvin,11,11,0,5,6,4,4,3,4,36.36,rollout_behavior_anomaly,unknown_or_not_specified,rollout_execution
+ManiSkill-Learn,haosulab/ManiSkill-Learn,5,5,0,1,4,4,0,1,0,0.00,evaluation_crash_or_failure,simulator_physics_rendering,rollout_execution

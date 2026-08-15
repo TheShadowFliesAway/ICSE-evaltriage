@@ -1,0 +1,168 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evaltriage"
+version = "0.1.0"
+description = "EvalTriage experiment system for embodied AI evaluation deviation diagnosis."
+requires-python = ">=3.10"
+dependencies = [
+  "PyYAML>=6.0.1",
+  "pydantic>=2",
+  "typer>=0.12",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+]
+
+[project.scripts]
+evaltriage-run = "evaltriage.cli:run_main"
+evaltriage-case = "evaltriage.cli:case_main"
+evaltriage-aggregate = "evaltriage.cli:aggregate_main"
+evaltriage-artifact = "evaltriage.cli:artifact_main"
+evaltriage-ablate = "evaltriage.cli:ablate_main"
+evaltriage-rq2-status = "evaltriage.cli:rq2_status_main"
+
+[tool.setuptools.packages.find]
+include = ["evaltriage*"]
+
+# 查看 run 级正式 CLI 契约：baseline/current/replay/smoke run 都从这里进入。
+[tool.poe.tasks.run-help]
+help = "查看 evaltriage-run 的参数说明。"
+cmd = "evaltriage-run --help"
+
+# 查看 case 级正式 CLI 契约：完整 diagnosis case 后续会从这里进入。
+[tool.poe.tasks.case-help]
+help = "查看 evaltriage-case 的参数说明。"
+cmd = "evaltriage-case --help"
+
+# 查看 metrics 聚合入口：后续用于生成 RQ2-RQ4 的 CSV。
+[tool.poe.tasks.aggregate-help]
+help = "查看 evaltriage-aggregate 的参数说明。"
+cmd = "evaltriage-aggregate --help"
+
+# 查看 formal ablation 聚合入口：只读真实 paper artifacts，重新计算消融 CSV。
+[tool.poe.tasks.ablate-help]
+help = "查看 evaltriage-ablate 的参数说明。"
+cmd = "evaltriage-ablate --help"
+
+# 查看 artifact 构建入口：后续用于生成 ICSE artifact 目录。
+[tool.poe.tasks.artifact-help]
+help = "查看 evaltriage-artifact 的参数说明。"
+cmd = "evaltriage-artifact --help"
+
+# 轻量开发检查：编译 package 并跑契约层单元测试，不运行 benchmark，不写正式实验产物。
+[tool.poe.tasks.check]
+help = "编译检查 package，并运行 schema/config/path 契约测试。"
+shell = """
+python -m compileall evaltriage
+python -m pytest -q
+"""
+
+# 校验 LeRobot+LIBERO smoke run 的 CLI 参数；只走 --validate-only，不执行 runner。
+[tool.poe.tasks.validate-run-lerobot]
+help = "只校验 LeRobot+LIBERO run 参数，不执行 benchmark。"
+shell = """
+evaltriage-run \
+  --platform lerobot_libero \
+  --run-id validate_lerobot_smoke \
+  --role smoke \
+  --suite libero_goal \
+  --task-ids 0 \
+  --seed 1000 \
+  --episodes 1 \
+  --policy-path /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044 \
+  --validate-only
+"""
+
+# 校验 ManiSkill smoke run 的 CLI 参数；只走 --validate-only，不执行 runner。
+[tool.poe.tasks.validate-run-maniskill]
+help = "只校验 ManiSkill run 参数，不执行 benchmark。"
+shell = """
+evaltriage-run \
+  --platform maniskill \
+  --run-id validate_maniskill_smoke \
+  --role smoke \
+  --suite PickCube-v1 \
+  --task-ids 0 \
+  --seed 1000 \
+  --episodes 1 \
+  --control-policy random \
+  --obs-mode state \
+  --validate-only
+"""
+
+# 校验 ManiSkill action.scale_multiplier 注入 run；这是当前已接入真实 runner overlay 的最小 fault injection。
+[tool.poe.tasks.validate-run-maniskill-action-injection]
+help = "只校验 ManiSkill action.scale_multiplier 注入 run 参数，不执行 benchmark。"
+shell = """
+evaltriage-run \
+  --platform maniskill \
+  --run-id validate_maniskill_action_scale_current \
+  --role current \
+  --suite PickCube-v1 \
+  --task-ids 0 \
+  --seed 1000 \
+  --episodes 1 \
+  --control-policy random \
+  --obs-mode state \
+  --injection-operator action.scale_multiplier \
+  --action-scale-multiplier 0.0 \
+  --validate-only
+"""
+
+# 校验 ManiSkill action replay 恢复 run；不带 injection，用同 seed/任务恢复 baseline action interface。
+[tool.poe.tasks.validate-run-maniskill-action-replay]
+help = "只校验 ManiSkill action interface replay run 参数，不执行 benchmark。"
+shell = """
+evaltriage-run \
+  --platform maniskill \
+  --run-id validate_maniskill_action_scale_replay \
+  --role replay \
+  --suite PickCube-v1 \
+  --task-ids 0 \
+  --seed 1000 \
+  --episodes 1 \
+  --control-policy random \
+  --obs-mode state \
+  --validate-only
+"""
+
+# 校验 ManiSkill reset.disable_fixed_init_state 注入 run；通过 alternate reset seed schedule 改变真实 reset 初始状态。
+[tool.poe.tasks.validate-run-maniskill-reset-injection]
+help = "只校验 ManiSkill reset.disable_fixed_init_state 注入 run 参数，不执行 benchmark。"
+shell = """
+evaltriage-run \
+  --platform maniskill \
+  --run-id validate_maniskill_reset_current \
+  --role current \
+  --suite PickCube-v1 \
+  --task-ids 0 \
+  --seed 1000 \
+  --episodes 1 \
+  --control-policy random \
+  --obs-mode state \
+  --injection-operator reset.disable_fixed_init_state \
+  --reset-seed-offset 10000 \
+  --validate-only
+"""
+
+# 校验 ManiSkill reset replay 恢复 run；不带 injection，用 baseline seed schedule 恢复 reset/init state。
+[tool.poe.tasks.validate-run-maniskill-reset-replay]
+help = "只校验 ManiSkill reset/init replay run 参数，不执行 benchmark。"
+shell = """
+evaltriage-run \
+  --platform maniskill \
+  --run-id validate_maniskill_reset_replay \
+  --role replay \
+  --suite PickCube-v1 \
+  --task-ids 0 \
+  --seed 1000 \
+  --episodes 1 \
+  --control-policy random \
+  --obs-mode state \
+  --validate-only
+"""

@@ -1,0 +1,70 @@
+\section{Background and Problem Definition}
+\label{sec:background-problem}
+
+\subsection{Embodied AI Evaluation Pipelines}
+
+An embodied AI evaluation pipeline combines a learned policy with a simulator or robot environment, task definitions, reset states, observation and action adapters, dependency versions, and metric definitions. In our evaluation setting, LeRobot provides the evaluation harness and learned policy interface, while LIBERO provides manipulation task suites for robot-learning evaluation \cite{liu2023libero,lerobot2026}. Unlike a deterministic pass/fail unit test, a benchmark run produces aggregate metrics and episode-level traces that can vary across seeds, initial states, runtime environments, and protocol settings.
+
+We use the term \emph{pipeline} deliberately. The measured behavior is not produced by the policy alone. Before an episode begins, the harness chooses a task, initializes a scene, resets the environment, loads a checkpoint and processor state, and configures observation and action adapters. During the episode, controller semantics and simulator state determine how the policy output is interpreted. After the episode, the benchmark turns observations and task conditions into a success label. A deviation can enter at any of these boundaries, so a diagnosis must preserve more context than the final success rate.
+
+\subsection{Evaluation Deviations}
+
+We define an \emph{evaluation deviation} as a statistically or semantically meaningful difference between a current evaluation and a baseline. Deviations include success-rate drops, reward or score mismatches, changed episode outcomes, rollout anomalies, crashes, and reproduction failures. We distinguish two observable classes. A \emph{completed-rollout deviation} has metrics and episode traces for the baseline and current run. A \emph{failed-run deviation} occurs when the evaluation itself crashes or fails before producing comparable rollout metrics.
+
+The distinction between completed-rollout and failed-run deviations changes what evidence is available. In a completed rollout, diagnosis can compare aggregate success, task-level success, and paired episode outcomes. In a failed run, the current artifact may contain no comparable task metric, but the failure record and point of failure can identify a factor family. \sys therefore avoids a single metric-only definition of deviation. It treats metric drops, paired-outcome shifts, and evaluation failures as different observable symptoms of the same diagnosis task. Figure~\ref{fig:problem-anatomy} summarizes this anatomy.
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=\columnwidth]{figures/fig2.pdf}
+  \caption{Problem anatomy for embodied-AI evaluation deviation diagnosis: metric drops, paired episode shifts, and failed runs are symptoms that must be connected to manifest, failure-record, and replay evidence before \sys attributes a status or abstains.}
+  \label{fig:problem-anatomy}
+\end{figure}
+
+\subsection{Diagnosis Task}
+
+An instance of the diagnosis task consists of a baseline run artifact $A_b$, a current run artifact $A_c$, and optional replay artifacts $A_r$. Each artifact may contain a manifest, aggregate summary, episode-level outcomes, logs, cost records, and, for failures, a failure record. The task is not to score a policy. It is to explain a comparison: why does $A_c$ differ from $A_b$, and what evidence supports or blocks attribution?
+
+We formalize the desired output as a triple
+$(s,\rho,E)$. The status $s$ is one of four evidence states:
+\emph{setup-sensitive deviation}, \emph{likely true regression},
+\emph{unknown}, or \emph{flaky evaluation} when repeated-run evidence is
+available. The ranking $\rho$ is an ordered list of candidate factor
+families only when the evidence supports attribution. The evidence record
+$E$ summarizes the observed symptom, relevant manifest or failure-record
+differences, replay outcomes, affected tasks or episodes, and any missing
+evidence that prevents a stronger conclusion.
+
+The central constraint is that a factor difference is only a hypothesis. A
+manifest diff may show that the control mode, reset configuration, camera
+pipeline, dependency version, checkpoint metadata, or metric protocol
+changed, but that diff is not itself a diagnosis. A setup-sensitive
+diagnosis requires behavioral or failure-recovery evidence: controlling or
+restoring the suspected factor must recover baseline behavior, explain the
+failed run, or otherwise connect the factor to the observed symptom. A
+likely true regression is reported only when the deviation remains after external
+evaluation factors have been controlled and the remaining evidence points
+to the policy or semantic code change. If no thresholded deviation is
+detected, if replay evidence conflicts, or if the needed artifacts are
+missing, the correct output is unknown rather than a forced factor.
+
+This definition separates diagnosis from three adjacent tasks. It is not
+performance improvement: \sys does not train a better policy, propose a new
+benchmark, or decide whether a policy is good. It is not experiment logging:
+logging records what changed, whereas diagnosis asks whether that change
+explains the observed behavior. It is also not generic flaky-test detection:
+instability is reported only when comparable repeated runs support it.
+The task is therefore evidence-governed attribution: produce a factor-level
+explanation when the artifacts justify one, and make the missing evidence
+explicit when they do not.
+
+\subsection{Engineering Factors}
+
+The factors considered by \sys include seed/randomness, reset or initial state, simulator and runtime environment, dependency drift, action/controller interface, observation/sensor preprocessing, checkpoint/config compatibility, evaluation protocol/metric, evaluation harness behavior, data format, and semantic code regression. A factor is \emph{attributable} only when the evidence links it to the observed deviation; a manifest difference by itself is a suspect, not a diagnosis.
+
+The factor vocabulary is intentionally engineering-facing. A developer can act on ``action/controller interface'' by checking controller mode and postprocessing, on ``checkpoint/config compatibility'' by inspecting processor state and checkpoint metadata, and on ``evaluation protocol/metric'' by reviewing task lists, episode lengths, thresholds, and success definitions. This vocabulary makes the diagnosis report closer to a debugging artifact than to a high-level model evaluation summary.
+
+\subsection{Diagnosis Statuses}
+
+\sys's primary statuses are setup-sensitive deviation, likely true regression, and unknown. A \emph{setup-sensitive deviation} is supported when controlling a changed engineering factor recovers baseline behavior. A \emph{likely true regression} is supported when external-factor replays fail to explain the deviation and semantic code or policy changes remain plausible. \emph{Unknown} is returned when no thresholded deviation is detected or when evidence is missing, weak, or conflicting. \sys can also report \emph{flaky evaluation} when comparable repeated runs vary without a stable factor explanation, but this status requires repeated-run instability evidence.
+
+The statuses are ordered by evidential responsibility rather than by severity. A setup-sensitive deviation is not necessarily less serious than a likely true regression; it may still block a release if the benchmark protocol changed unintentionally. Similarly, unknown is not a failure to produce text. It is the appropriate outcome when the artifacts do not support a defensible explanation. This ordering prevents \sys from turning every detected difference into a confident diagnosis.

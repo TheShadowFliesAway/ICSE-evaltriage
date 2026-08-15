@@ -1,0 +1,43 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_lerobot_observation_image_flip_goal_task1
+  platform: lerobot_libero
+  case_family: setup_sensitive_factor
+  deviation_symptom: success_rate_drop_or_mismatch
+  expected_status: likely_setup_sensitive_deviation
+  expected_factor: observation_sensor_preprocessing
+  injected_factor: observation_sensor_preprocessing
+  injection_operator: observation.image_flip
+  rq1_factor_category: observation_sensor_preprocessing
+  rq1_evidence_refs:
+    - github_issue::huggingface/lerobot::1316
+  rq1_support_level: evidence_backed
+  coverage_status: core_planned
+  artifact_split: validation
+baseline_run_ids:
+  - validation_lr_goal_task1_ep1_baseline_seed1000
+current_runs:
+  - platform: lerobot_libero
+    run_id: validation_lr_goal_task1_ep1_current_image_flip_both_seed1000
+    role: current
+    suite: libero_goal
+    task_ids: [1]
+    seed: 1000
+    episodes: 1
+    output_root: /data/project/zjx/runs/evaltriage
+    policy_path: /data/project/zjx/checkpoints/lerobot/pi0_libero_finetuned_v044
+    obs_type: pixels_agent_pos
+    camera_size: 360
+    libero_image_flip_axis: both
+    compile_model: false
+    use_async_envs: false
+    injection:
+      enabled: true
+      factor: observation_sensor_preprocessing
+      operator: observation.image_flip
+      params:
+        axis: both
+replay_run_ids:
+  - validation_lr_goal_task1_ep1_replay_seed1000
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

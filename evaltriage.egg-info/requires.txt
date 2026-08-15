@@ -1,0 +1,6 @@
+PyYAML>=6.0.1
+pydantic>=2
+typer>=0.12
+
+[dev]
+pytest>=8

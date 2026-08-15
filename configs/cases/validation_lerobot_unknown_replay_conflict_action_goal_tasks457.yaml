@@ -1,0 +1,24 @@
+schema_version: "1.0"
+kind: case
+case:
+  case_id: validation_lerobot_unknown_replay_conflict_action_goal_tasks457
+  platform: lerobot_libero
+  case_family: unknown
+  deviation_symptom: success_rate_drop_or_mismatch
+  expected_status: unknown_engineering_factor
+  injected_factor: action_controller_interface
+  injection_operator: action.change_control_mode
+  rq1_factor_category: unknown_or_not_specified
+  rq1_evidence_refs: []
+  rq1_support_level: synthetic_stress
+  coverage_status: planned_extension
+  artifact_split: validation
+  unknown_reason: conflicting replay outcomes intentionally included
+baseline_run_ids:
+  - validation_lr_goal_tasks457_ep1_baseline_seed1000
+current_run_ids:
+  - validation_lr_goal_tasks457_ep1_current_control_mode_absolute_seed1000
+replay_run_ids:
+  - validation_lr_goal_tasks457_ep1_replay_seed1000
+  - validation_lr_goal_tasks457_ep1_replay_control_mode_absolute_seed1000
+thresholds_path: configs/thresholds/validation_lerobot_libero.yaml

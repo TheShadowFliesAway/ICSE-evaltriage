@@ -1,0 +1,30 @@
+\section{Discussion}
+\label{sec:discussion-threats}
+
+\subsection{Why Negative Calibration Matters}
+
+Manifest differences are not sufficient evidence for attribution. A runtime version, seed, or configuration field may differ without causing a thresholded deviation; developers may also change logging, task order, or dependency metadata without changing measured behavior. Negative calibration cases therefore test whether \sys treats such differences as suspects rather than causes unless behavioral deviation and replay evidence support them.
+
+\subsection{Completed Rollouts and Failed Runs}
+
+Completed rollouts and failed runs expose different evidence, so we report them separately. A completed-rollout recovery says that the policy can recover baseline behavior when a factor is controlled; a failed-run recovery says that the evaluation pipeline can return to an executable state. Both support triage, but they lead to different actions: inspecting benchmark semantics or adapters in the former case, and fixing environment setup, missing fields, or compatibility assumptions in the latter.
+
+\subsection{What \sys Does Not Decide}
+
+\sys does not decide whether the current policy is better or worse than the baseline, or whether a setup-sensitive change is desirable. A protocol change may be intentional, a controller-interface change may be part of a migration, and a dependency update may be necessary. \sys only supplies evidence about why the evaluation changed; developers still decide whether to accept, document, revert, pin, or request more replay evidence.
+
+\subsection{Implications for Evaluation Maintenance}
+
+\sys is intended to sit between ordinary benchmark execution and human review. A continuous-integration (CI) job or release script can run the evaluation, produce the artifact contract, and invoke the diagnosis layer only when the current result deviates from a baseline. The output should then be read as a triage report rather than as an automatic merge decision: an action-interface diagnosis points toward adapter semantics, a checkpoint/config diagnosis points toward processor statistics or normalization state, and a failed-run dataset diagnosis says that model quality should not be interpreted until the data contract is repaired.
+
+This changes the developer workflow from asking ``did the score drop?'' to asking ``what evidence explains the drop, and what evidence is still missing?'' Aggregate success rates are not enough once a deviation appears; developers need task-level outcomes, paired episode records, manifest fields, failure stages, and replay provenance. The artifact contract in \sys is deliberately small because the goal is not to replace experiment trackers, but to preserve the minimal evidence needed for benchmark-maintenance debugging.
+
+\section{Threats to Validity}
+
+\noindent\textbf{Internal validity.} Threats include threshold choices, replay budgets, controlled-factor correctness, and oracle leakage. We mitigate these threats by separating negative calibration, ablations, and robustness cases from the paper-only matrix, and keeping expected-factor labels outside diagnosis inputs. Construct validity concerns whether success-rate drops, failed-run status, and paired episode shifts capture developer-facing deviations; we derive these symptoms from GitHub issue and pull-request evidence.
+
+\noindent\textbf{Empirical-study validity.} The RQ1 study is a mining and single-annotator manual-classification study over public maintenance records, not a statistically sampled prevalence study. The 473 records therefore support the existence and diversity of the diagnosis problem, but should not be read as exact population rates. We mitigate this by freezing the JSONL records, retaining evidence quotes and URLs, and computing all RQ1 tables deterministically from the frozen input.
+
+\noindent\textbf{External validity.} Threats include the focus on LeRobot+LIBERO and one primary policy. The controlled cases are real LeRobot+LIBERO evaluations and failed-run artifacts, but still controlled instances rather than naturally occurring histories from many stacks. EvalTriage's operators may need extension for other simulators, robot embodiments, or hardware-in-the-loop deployments; we present these results as artifact-level causal validation, while the GitHub study motivates the broader factor vocabulary.
+
+\noindent\textbf{Flaky-status evidence.} Our RQ2 evidence does not support a strong flaky-classification claim. The flaky probes did not produce thresholded repeated-run instability, so the main status result excludes them and reports setup-sensitive, likely true-regression, and unknown cases instead. Future work should evaluate flaky status on naturally unstable benchmark histories or larger repeated-run campaigns.
